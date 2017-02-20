@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JavaScript中matches(matchesSelector)的兼容写法</title>
+</head>
+<body>
+	<div id="wrap">
+	    <a class="btn" href="#">点击代码</a>
+	    <span class="btn">不可点击按钮</span>
+	</div>
+	<script>
+		// 如果当前元素能被指定的css选择器查找到,则返回true,否则返回false.
+		document.querySelector('#wrap').addEventListener('click', function(e){
+			if (e.target.webkitMatchesSelector('a.btn')) {
+				e.preventDefault();
+				alert('matches.html')
+			};
+		});
+		// 对于不支持 Element.matches() 或Element.matchesSelector()，但支持document.querySelectorAll()方法的浏览器，存在以下替代方案
+		if (!Element.prototype.matches) {
+		    Element.prototype.matches = 
+		        Element.prototype.matchesSelector || 
+		        Element.prototype.mozMatchesSelector ||
+		        Element.prototype.msMatchesSelector || 
+		        Element.prototype.oMatchesSelector || 
+		        Element.prototype.webkitMatchesSelector ||
+		        function(s) {
+		            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+		                i = matches.length;
+		            while (--i >= 0 && matches.item(i) !== this) {}
+		            return i > -1;            
+		        };
+		}
+	</script>
+</body>
+</html>
